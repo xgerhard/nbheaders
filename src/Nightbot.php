@@ -51,7 +51,7 @@ class Nightbot
      * Returns the provider of the Nightbot request
      *
      * If user is set, get the provider from user array, since the channel array will have provider Twitch on Discord.
-     * Timer messages on Twitch have no user info in the header, grab the channel info instead. Timers don't work on Discord so the channel should have the right value.
+     * Timer messages on Twitch have no user info in the header, grab the channel info instead. Timers don't work on Discord so the user should never be null there.
      *
      * @return string|null
     */
