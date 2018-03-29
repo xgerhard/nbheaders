@@ -1,0 +1,22 @@
+{
+    "name": "xgerhard/nbheaders",
+    "description": "Parse Nightbot headers",
+    "type": "package",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "xgerhard",
+            "email": "xgerhard@2g.be"
+        }
+    ],
+    "require": {
+        "php": ">=5.6"
+    },
+    "require-dev": {
+    },
+    "autoload": {
+        "psr-4": {
+            "xgerhard\\nbheaders\\": "src/"
+        }
+    }
+}
