@@ -48,6 +48,16 @@ class Nightbot
     }
 
     /**
+     * Returns if the request is timer request
+     *
+     * @return boolean
+    */
+    public function isTimer()
+    {
+        return $this->channel != null && $this->user == null;
+    }
+
+    /**
      * Returns the provider of the Nightbot request
      *
      * If user is set, get the provider from user array, since the channel array will have provider Twitch on Discord.
