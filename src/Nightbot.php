@@ -86,8 +86,7 @@ class Nightbot
                 if (isset($aHeaders[$strNightbotKey]))
                     $val = $aHeaders[$strNightbotKey];
             }
-            elseif ($request->has($strNightbotKey))
-                $val = $request->input($strNightbotKey);
+            else $val = $request->header($strNightbotKey);
 
             if ($val)
             {
