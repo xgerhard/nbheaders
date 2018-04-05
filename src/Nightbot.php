@@ -58,6 +58,16 @@ class Nightbot
     }
 
     /**
+     * Returns if the user is a moderator (Owner counts as moderator)
+     *
+     * @return boolean
+    */
+    public function isUserModerator()
+    {
+        return $this->user != null && ($this->user['userLevel'] == 'owner' || $this->user['userLevel'] == 'moderator');
+    }
+
+    /**
      * Returns the provider of the Nightbot request
      *
      * If user is set, get the provider from user array, since the channel array will have provider Twitch on Discord.
