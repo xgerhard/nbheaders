@@ -1,4 +1,5 @@
 <?php
+
 namespace xgerhard\nbheaders;
 
 class Nightbot
@@ -10,7 +11,7 @@ class Nightbot
     /**
      * Returns the "Nightbot-User" header data
      *
-     * @return array|null
+     * @return object|null
     */
     public function getUser()
     {
@@ -20,7 +21,7 @@ class Nightbot
     /**
      * Returns the "Nightbot-Channel" header data
      *
-     * @return array|null
+     * @return object|null
     */
     public function getChannel()
     {
@@ -44,7 +45,7 @@ class Nightbot
     */
     public function isNightbotRequest()
     {
-        return $this->channel != null;
+        return !!$this->channel;
     }
 
     /**
@@ -54,7 +55,7 @@ class Nightbot
     */
     public function isTimer()
     {
-        return $this->channel != null && $this->user == null;
+        return !!$this->channel && !$this->user;
     }
 
     /**
@@ -64,7 +65,7 @@ class Nightbot
     */
     public function isUserModerator()
     {
-        return $this->user != null && ($this->user['userLevel'] == 'owner' || $this->user['userLevel'] == 'moderator');
+        return $this->user && ($this->user->userLevel == 'owner' || $this->user->userLevel == 'moderator');
     }
 
     /**
@@ -77,15 +78,12 @@ class Nightbot
     */
     public function getProvider()
     {
-        if ($this->user != null)
-        {
-            return $this->user['provider'];
-        }
-        elseif ($this->channel != null)
-        {
-            return $this->channel['provider'];
-        }
-        return null;
+        if ($this->user)
+            return $this->user->provider;
+        elseif ($this->channel)
+            return $this->channel->provider;
+        else
+            return null;
     }
 
     /**
@@ -93,15 +91,16 @@ class Nightbot
      *
      * @param Request $request The request for Laravel applications (optional)
     */
-    public function __construct ($request = null)
+    public function __construct($request = null)
     {
-        $a = array('responseUrl' => 'Nightbot-Response-Url', 'user' => 'Nightbot-User', 'channel' => 'Nightbot-Channel');
-        if ($request === null) $aHeaders = $this->getHeaders();
+        $a = ['responseUrl' => 'Nightbot-Response-Url', 'user' => 'Nightbot-User', 'channel' => 'Nightbot-Channel'];
+        if (!$request)
+            $aHeaders = $this->getHeaders();
 
-        foreach ($a AS $strKey => $strNightbotKey)
+        foreach ($a as $strKey => $strNightbotKey)
         {
             $val = null;
-            if ($request === null)
+            if (!$request)
             {
                 if (isset($aHeaders[$strNightbotKey]))
                     $val = $aHeaders[$strNightbotKey];
@@ -113,7 +112,10 @@ class Nightbot
                 if ($strKey == 'responseUrl')
                     $this->{$strKey} = $val;
                 else
-                    parse_str($val, $this->{$strKey});
+                {
+                    parse_str($val, $aVal);
+                    $this->{$strKey} = (object) $aVal;
+                }
             }
         }
     }
@@ -122,8 +124,8 @@ class Nightbot
      * Returns headers of the request
      *
      * @return array
-    */ 
-    private function getHeaders() 
+    */
+    private function getHeaders()
     {
         if (function_exists('getallheaders'))
             return getallheaders();
@@ -133,9 +135,9 @@ class Nightbot
             foreach ($_SERVER as $strName => $strValue)
             {
                 if (substr($strName, 0, 5) == 'HTTP_')
-                    $aHeaders[str_replace(' ', '-', ucwords(strtolower(str_replace('_', ' ', substr($strName, 5)))))] = $strValue; 
-            } 
-            return $aHeaders; 
+                    $aHeaders[str_replace(' ', '-', ucwords(strtolower(str_replace('_', ' ', substr($strName, 5)))))] = $strValue;
+            }
+            return $aHeaders;
         }
     }
 }
