@@ -1,12 +1,12 @@
 {
     "name": "xgerhard/nbheaders",
-    "description": "Parse Nightbot headers",
+    "description": "Easily parse Nightbot headers",
     "type": "package",
     "license": "MIT",
     "authors": [
         {
             "name": "xgerhard",
-            "email": "xgerhard@2g.be"
+            "email": "hi@gerhard.dev"
         }
     ],
     "require": {
