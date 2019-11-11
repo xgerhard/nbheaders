@@ -71,8 +71,8 @@ class Nightbot
     /**
      * Returns the provider of the Nightbot request
      *
-     * If user is set, get the provider from user array, since the channel array will have provider Twitch on Discord.
-     * Timer messages on Twitch have no user info in the header, grab the channel info instead. Timers don't work on Discord so the user should never be null there.
+     * If user is set, get the provider from user object. The provider value from the channel object on Discord is the provider that was used to link Nightbot to Discord.
+     * Timer messages have no user info in the headers, grab the channel info instead. Timers don't work on Discord so the user should never be null there.
      *
      * @return string|null
     */
@@ -88,11 +88,10 @@ class Nightbot
 
     /**
      * Parse Nightbot headers if they are set
-     *
-     * @param Request $request The request for Laravel applications (optional)
     */
-    public function __construct($request = null)
+    public function __construct()
     {
+        $request = function_exists('request') ? request() : null;
         $a = ['responseUrl' => 'Nightbot-Response-Url', 'user' => 'Nightbot-User', 'channel' => 'Nightbot-Channel'];
         if (!$request)
             $aHeaders = $this->getHeaders();
