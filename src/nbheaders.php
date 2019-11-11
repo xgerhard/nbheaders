@@ -2,7 +2,7 @@
 
 namespace xgerhard\nbheaders;
 
-class Nightbot
+class nbheaders
 {
     protected $user = null;
     protected $channel = null;

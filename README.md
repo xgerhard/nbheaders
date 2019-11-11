@@ -6,10 +6,10 @@ Example:
 ```php
 require 'vendor/autoload.php';
 
-$oNightbot = new xgerhard\nbheaders\Nightbot;
+$nbheaders = new xgerhard\nbheaders\nbheaders;
 
-if($oNightbot->isNightbotRequest())
-    echo 'Platform: '. $oNightbot->getProvider() .' | User: '. http_build_query($oNightbot->getUser(), '', ', ') .' | Channel: '. http_build_query($oNightbot->getChannel(), '', ', ') .' | Timer: '. ($oNightbot->isTimer() ? 'Yes' : 'No') .' | Moderator: '. ( $oNightbot->isUserModerator() ? 'Yes' : 'No');
+if($nbheaders->isNightbotRequest())
+    echo 'Platform: '. $nbheaders->getProvider() .' | User: '. http_build_query($nbheaders->getUser(), '', ', ') .' | Channel: '. http_build_query($nbheaders->getChannel(), '', ', ') .' | Timer: '. ($nbheaders->isTimer() ? 'Yes' : 'No') .' | Moderator: '. ( $nbheaders->isUserModerator() ? 'Yes' : 'No');
 else
     echo 'Not a Nightbot request';
 
