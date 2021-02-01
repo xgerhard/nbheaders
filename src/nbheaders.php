@@ -19,6 +19,16 @@ class nbheaders
     }
 
     /**
+     * Set the "Nightbot-User" header data
+     *
+     *  @param array|object $user
+    */
+    public function setUser($user)
+    {
+        $this->user = is_array($user) ? (object) $user : (is_object($user) ? $user : null);
+    }
+
+    /**
      * Returns the "Nightbot-Channel" header data
      *
      * @return object|null
@@ -29,6 +39,16 @@ class nbheaders
     }
 
     /**
+     * Set the "Nightbot-Channel" header data
+     *
+     *  @param array|object $channel
+    */
+    public function setChannel($channel)
+    {
+        $this->channel = is_array($channel) ? (object) $channel : (is_object($channel) ? $channel : null);
+    }
+
+    /**
      * Returns the "Nightbot-Response-Url" header data
      *
      * @return string|null
@@ -36,6 +56,16 @@ class nbheaders
     public function getResponseUrl()
     {
         return $this->responseUrl;
+    }
+
+    /**
+     * Set the "Nightbot-Response-Url" header data
+     *
+     *  @param string $responseUrl
+    */
+    public function setResponseUrl($responseUrl)
+    {
+        $this->responseUrl = (string) $responseUrl;
     }
 
     /**
