@@ -2,11 +2,33 @@
 
 namespace xgerhard\nbheaders;
 
-class nbheaders
+class NBHeaders
 {
     protected $user = null;
     protected $channel = null;
     protected $responseUrl = null;
+
+    /**
+     * Parse Nightbot headers if they are set
+    */
+    public function __construct()
+    {
+        $a = ['responseUrl' => 'Nightbot-Response-Url', 'user' => 'Nightbot-User', 'channel' => 'Nightbot-Channel'];
+        $aHeaders = $this->getHeaders();
+
+        foreach ($a as $strKey => $strNightbotKey) {
+            if (isset($aHeaders[$strNightbotKey])) {
+                $val = $aHeaders[$strNightbotKey];
+
+                if ($strKey == 'responseUrl') {
+                    $this->{$strKey} = $val;
+                } else {
+                    parse_str($val, $aVal);
+                    $this->{$strKey} = (object) $aVal;
+                }
+            }
+        }
+    }
 
     /**
      * Returns the "Nightbot-User" header data
@@ -75,7 +97,7 @@ class nbheaders
     */
     public function isNightbotRequest()
     {
-        return !!$this->channel;
+        return !! $this->channel;
     }
 
     /**
@@ -85,7 +107,7 @@ class nbheaders
     */
     public function isTimer()
     {
-        return !!$this->channel && !$this->user;
+        return !! $this->channel && ! $this->user;
     }
 
     /**
@@ -101,51 +123,20 @@ class nbheaders
     /**
      * Returns the provider of the Nightbot request
      *
-     * If user is set, get the provider from user object. The provider value from the channel object on Discord is the provider that was used to link Nightbot to Discord.
-     * Timer messages have no user info in the headers, grab the channel info instead. Timers don't work on Discord so the user should never be null there.
+     * If user is set, get the provider from user object. The provider value from the channel object on Discord is the
+     * provider that was used to link Nightbot to Discord. Timer messages have no user info in the headers, grab the
+     * channel info instead. Timers don't work on Discord so the user should never be null there.
      *
      * @return string|null
     */
     public function getProvider()
     {
-        if ($this->user)
+        if ($this->user) {
             return $this->user->provider;
-        elseif ($this->channel)
+        } elseif ($this->channel) {
             return $this->channel->provider;
-        else
+        } else {
             return null;
-    }
-
-    /**
-     * Parse Nightbot headers if they are set
-    */
-    public function __construct()
-    {
-        $request = function_exists('request') ? request() : null;
-        $a = ['responseUrl' => 'Nightbot-Response-Url', 'user' => 'Nightbot-User', 'channel' => 'Nightbot-Channel'];
-        if (!$request)
-            $aHeaders = $this->getHeaders();
-
-        foreach ($a as $strKey => $strNightbotKey)
-        {
-            $val = null;
-            if (!$request)
-            {
-                if (isset($aHeaders[$strNightbotKey]))
-                    $val = $aHeaders[$strNightbotKey];
-            }
-            else $val = $request->header($strNightbotKey);
-
-            if ($val)
-            {
-                if ($strKey == 'responseUrl')
-                    $this->{$strKey} = $val;
-                else
-                {
-                    parse_str($val, $aVal);
-                    $this->{$strKey} = (object) $aVal;
-                }
-            }
         }
     }
 
@@ -156,18 +147,18 @@ class nbheaders
     */
     private function getHeaders()
     {
-        if (function_exists('getallheaders'))
+        if (function_exists('getallheaders')) {
             return getallheaders();
-        else
-        {
+        } else {
             $aHeaders = [];
-            foreach ($_SERVER as $strName => $strValue)
-            {
-                if (substr($strName, 0, 5) == 'HTTP_')
-                    $aHeaders[str_replace(' ', '-', ucwords(strtolower(str_replace('_', ' ', substr($strName, 5)))))] = $strValue;
+            foreach ($_SERVER as $strName => $strValue) {
+                if (substr($strName, 0, 5) == 'HTTP_') {
+                    $aHeaders[
+                        str_replace(' ', '-', ucwords(strtolower(str_replace('_', ' ', substr($strName, 5)))))
+                    ] = $strValue;
+                }
             }
             return $aHeaders;
         }
     }
 }
-?>
