@@ -1,31 +1,52 @@
 # nbheaders
-Easily handle Nightbot headers 
+Easily parse Nightbot headers. Requires PHP 8.2+.
+
+Install:
+------
+`composer require xgerhard/nbheaders`
 
 Example:
 ------
 ```php
 require 'vendor/autoload.php';
 
-$nbheaders = new xgerhard\nbheaders\nbheaders;
+use xgerhard\nbheaders\NBHeaders;
 
-if($nbheaders->isNightbotRequest())
-    echo 'Platform: '. $nbheaders->getProvider() .' | User: '. http_build_query($nbheaders->getUser(), '', ', ') .' | Channel: '. http_build_query($nbheaders->getChannel(), '', ', ') .' | Timer: '. ($nbheaders->isTimer() ? 'Yes' : 'No') .' | Moderator: '. ( $nbheaders->isUserModerator() ? 'Yes' : 'No');
-else
-    echo 'Not a Nightbot request';
+$nb = new NBHeaders;
 
-// Available functions:
-// getUser() retrieve user info who called the command
-// getChannel() retrieve channel info where the command was used
-// getResponseUrl() retrieve response url to use with Nightbot API
-// getProvider() retrieve the provider e.g. twitch, youtube, discord
-// isNightbotRequest() checks if the command was called by Nightbot
-// isTimer() checks if the command is called from a timer (Returns false if its called by a user)
-// isUserModerator() checks if the user calling the command is a moderator
+if (! $nb->hasNightbotHeaders() || ! $nb->isNightbotIp($_SERVER['REMOTE_ADDR'])) {
+    exit('Not a Nightbot request');
+}
+
+echo 'Platform: '. $nb->getProvider()
+    .' | Channel: '. $nb->getChannel()->displayName
+    .' | User: '. ($nb->getUser()?->displayName ?? 'None')
+    .' | Timer: '. ($nb->isTimer() ? 'Yes' : 'No')
+    .' | Moderator: '. ($nb->isUserModerator() ? 'Yes' : 'No');
 ```
-Test example above:
------
-```!commands add !nb $(urlfetch https://2g.be/twitch/Nightbot/headers.php)```
 
-Install nbheaders in your project:
+Available functions:
 ------
-`composer require xgerhard/nbheaders`
+| Function | Returns |
+|---|---|
+| `getUser()` | The user who called the command, `null` on timers |
+| `getChannel()` | The channel where the command was used |
+| `getResponseUrl()` | The response url, `null` if it isn't a Nightbot API url |
+| `getProvider()` | The provider, e.g. twitch, youtube, discord |
+| `hasNightbotHeaders()` | If the request has valid Nightbot headers |
+| `isNightbotIp($ip)` | If the IP belongs to Nightbot |
+| `isTimer()` | If the command was called by a timer |
+| `isUserModerator()` | If the user is a moderator or the owner |
+
+A user has `name`, `displayName`, `provider`, `providerId` and `userLevel`. A channel has the same, without `userLevel`.
+
+Testing:
+------
+Set your own data to test without Nightbot:
+
+```php
+$nb->setChannel(['name' => 'xgerhard', 'displayName' => 'xgerhard', 'provider' => 'twitch', 'providerId' => '1']);
+$nb->setUser(['name' => 'bob', 'displayName' => 'Bob', 'provider' => 'twitch', 'providerId' => '2', 'userLevel' => 'everyone']);
+$nb->setResponseUrl('https://api.nightbot.tv/1/channel/send/test');
+```
+

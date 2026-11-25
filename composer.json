@@ -1,7 +1,7 @@
 {
     "name": "xgerhard/nbheaders",
     "description": "Easily parse Nightbot headers",
-    "type": "package",
+    "type": "library",
     "license": "MIT",
     "authors": [
         {
@@ -11,13 +11,22 @@
     ],
     "minimum-stability": "stable",
     "require": {
-        "php": ">=5.6"
+        "php": ">=8.2"
     },
     "require-dev": {
+        "phpunit/phpunit": "^11.0"
     },
     "autoload": {
         "psr-4": {
             "xgerhard\\nbheaders\\": "src/"
         }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "xgerhard\\nbheaders\\Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "test": "phpunit"
     }
 }
